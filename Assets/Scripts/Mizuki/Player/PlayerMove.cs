@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PlayerMove : ObjectBase {
 	[SerializeField]
-	private Camera m_MainCamera;				// カメラオブジェクト
-	[SerializeField]
 	private float m_PlayerMoveSpeed;			// 移動速度
 	[SerializeField]
 	private float m_PlayerRotSpeed;				// 回転速度
@@ -20,14 +18,12 @@ public class PlayerMove : ObjectBase {
 	}
 
 	public override void Execute(float deltaTime) {
-		var pos = transform.position;
-		//pos.x = Mathf.Cos(m_MainCamera.transform.rotation.y) * Mathf.Cos(m_MainCamera.transform.rotation.x) * m_PlayerSpeed * MultiInput.Instance.GetLeftStickAxis().y;
-		//pos.y = Mathf.Sin(m_MainCamera.transform.rotation.y) * Mathf.Cos(m_MainCamera.transform.rotation.x) * m_PlayerSpeed * MultiInput.Instance.GetLeftStickAxis().y;
-		//pos.z = Mathf.Sin(m_MainCamera.transform.rotation.y) * Mathf.Cos(m_MainCamera.transform.rotation.x) * m_PlayerSpeed * MultiInput.Instance.GetLeftStickAxis().y;
-		pos += transform.forward * m_PlayerMoveSpeed * MultiInput.Instance.GetLeftStickAxis().y * deltaTime;
+		// 前進後退
+		var pos = transform.position;pos += transform.forward * m_PlayerMoveSpeed * MultiInput.Instance.GetLeftStickAxis().y * deltaTime;
 		pos += transform.right * m_PlayerMoveSpeed * MultiInput.Instance.GetLeftStickAxis().x * deltaTime;
 		transform.position = pos;
 
+		// 向き変更
 		transform.Rotate(new Vector3(
 			MultiInput.Instance.GetRightStickAxis().y * deltaTime * m_PlayerRotSpeed * m_RotReverse[0],
 			MultiInput.Instance.GetRightStickAxis().x * deltaTime * m_PlayerRotSpeed * m_RotReverse[1],
