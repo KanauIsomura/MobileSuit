@@ -20,6 +20,7 @@ public class RaderMarkerManager : SingletonMonoBehaviour<RaderMarkerManager> {
 	[SerializeField]
 	private GameObject m_PlayerObj;         // プレイヤーのオブジェクト
 	private List<RaderMarker> m_MarkerObjList = new List<RaderMarker>();
+	private ObjectUsingChecker<RaderMarker> m_MakerManager = new ObjectUsingChecker<RaderMarker>();
 	// Use this for initialization
 	void Start () {
 	}
