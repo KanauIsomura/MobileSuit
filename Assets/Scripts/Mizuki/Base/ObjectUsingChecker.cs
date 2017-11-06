@@ -28,7 +28,7 @@ public class ObjectUsingChecker<T> : ObjectBase {
 				return m_ObjList[i];
 			}
 		}
-		ObjectData obj;
+		ObjectData obj = Instantiate(ObjectData);
 		obj.ObjBody = default(T);
 		obj.isUsing = true;
 		obj.NumberOfList = i;

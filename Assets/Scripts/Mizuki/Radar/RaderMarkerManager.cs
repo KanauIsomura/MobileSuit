@@ -19,8 +19,9 @@ public class RaderMarkerManager : SingletonMonoBehaviour<RaderMarkerManager> {
 	private List<string> m_RaderViewObjectTagList = new List<string>();
 	[SerializeField]
 	private GameObject m_PlayerObj;         // プレイヤーのオブジェクト
-	private List<RaderMarker> m_MarkerObjList = new List<RaderMarker>();
-	private ObjectUsingChecker<RaderMarker> m_MakerManager = new ObjectUsingChecker<RaderMarker>();
+	private ObjectUsingChecker<RaderMarker> m_MakerManager 
+		= new ObjectUsingChecker<RaderMarker>(); // レーダーに映すものリスト
+
 	// Use this for initialization
 	void Start () {
 	}
@@ -31,15 +32,16 @@ public class RaderMarkerManager : SingletonMonoBehaviour<RaderMarkerManager> {
 	}
 
 	public void CheckAndSetMarker() {
-		List<GameObject> m_RaderObjList = new List<GameObject>();// レーダーに映すものリスト
+		List<GameObject> m_RaderObjList = new List<GameObject>();
+		m_MakerManager.DeleteObjAll();
 		foreach(string tagName in m_RaderViewObjectTagList) {
 			m_RaderObjList.AddRange(GameObject.FindGameObjectsWithTag(tagName));
 		}
 
 		foreach(GameObject obj in m_RaderObjList) {
-			//m_MarkerObjList
+			Vector3 position = obj.transform.position - m_PlayerObj.transform.position;
+			m_MakerManager.NewObjGet().ObjBody.SetMakerInRader(position);
 		}
-		//Vector3 position = testObj.transform.position - m_PlayerObj.transform.position;
 		//testImage.transform.localPosition = new Vector3(position.x, position.z, 0.0f);
 	}
 }
