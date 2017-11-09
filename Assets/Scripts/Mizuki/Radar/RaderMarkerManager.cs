@@ -21,7 +21,7 @@ public class RaderMarkerManager : SingletonMonoBehaviour<RaderMarkerManager> {
 	private GameObject m_PlayerObj;             // プレイヤーのオブジェクト
 	private ObjectUsingChecker m_MakerManager;  // レーダーに映すものリスト
     [SerializeField]
-    private GameObject m_ImagePrefub;           // マーカーアイコンプレハブ
+    private GameObject m_ImagePrefab;           // マーカーアイコンプレハブ
     public float m_RaderRange = 1.0f;           // レーダーの視認範囲比率(大きいほうが広域が分かる)
     [SerializeField]
     private float m_RaderRangeLimit;            // レーダーの視認範囲(キャンバスのレーダー半径でいいです。初期値は100)
@@ -50,7 +50,7 @@ public class RaderMarkerManager : SingletonMonoBehaviour<RaderMarkerManager> {
             if(m_RaderRangeLimit < Mathematics.VectorSize(new Vector3(position.x,position.z, 0.0f))) {
                 continue;
             }
-			var clone = m_MakerManager.NewObjGet(m_ImagePrefub).ObjBody;
+			var clone = m_MakerManager.NewObjGet(m_ImagePrefab).ObjBody;
             clone.GetComponent<RaderMarker>().SetMakerInRader(new Vector2(position.x, position.z));
         }
 		//testImage.transform.localPosition = new Vector3(position.x, position.z, 0.0f);
