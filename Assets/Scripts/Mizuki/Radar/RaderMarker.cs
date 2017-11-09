@@ -44,7 +44,7 @@ public class RaderMarker : ObjectBase {
 	/// <param name="position">マーカーのレーダ上の位置</param>
 	/// <param name="type">マーカーのタイプ(敵、漂流物など)</param>
 	public void SetMakerInRader(Vector2 position/*, EnemyType type*/) {
-		m_ImageObj.transform.position = position;   // 位置
+        m_ImageObj.rectTransform.localPosition = position;   // 位置
 		//m_ImageObj.rectTransform.sizeDelta = m_ImageSizeList[(int)type];	// 大きさ変更
 	}
 }
