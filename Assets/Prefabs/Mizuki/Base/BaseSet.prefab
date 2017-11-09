@@ -36,7 +36,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4167955053446858}
   m_Layer: 0
-  m_Name: MizukiBaseSet
+  m_Name: BaseSet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
