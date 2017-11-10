@@ -16,8 +16,11 @@ namespace rt
         [SerializeField] private float _minFishDistance;
         [SerializeField] private float _matchInfluence;
         [SerializeField] private float _steerInfluence;
+        [SerializeField] private float _minTerritorialityForce;
+        [SerializeField] private float _maxTerritorialityForce;
         [SerializeField] private Vector3 _territorialityLength;
         [SerializeField] private Vector3 _territorialityOrigin;
+        [SerializeField] private Territory _territory;
         private Transform _transform;
         private FishMoveBehaviour _moveBehaviour;
         private List<Fish> _visibleFishList;
@@ -53,18 +56,22 @@ namespace rt
         // ========================================
         void Start()
         {
+            // テリトリー無しはエラー
+            Debug.Assert(_territory != null, "テリトリー無しの魚は存在できません");
             _transform = GetComponent<Transform>();
             _moveBehaviour = GetComponent<FishMoveBehaviour>();
             _visibleFishList = new List<Fish>();
             // とりあえずここで設定
             _swimPower = 20.0f;
             _fieldOfView = 5.0f;
-            _minFishDistance = 0.8f;
+            _minFishDistance = 1.0f;
             _matchInfluence = 0.5f;
             _swingSize = 0.3f;
-            _steerInfluence = 0.1f;
+            _steerInfluence = 0.01f;
             _territorialityLength = new Vector3(20.0f, 20.0f, 20.0f);
             _territorialityOrigin = new Vector3(0, 0, 0);
+            _minTerritorialityForce = 0.05f;
+            _maxTerritorialityForce = 1.0f;
         }
 
         // ========================================
@@ -215,13 +222,7 @@ namespace rt
         // ========================================
         protected virtual Vector3 TerritorialityFlow()
         {
-            TerritorialityWall[] wall = new TerritorialityWall[6];
-            wall[0] = new TerritorialityWall( new Vector3(0, _territorialityOrigin.y + _territorialityLength.y, 0), new Vector3(0, -1.0f, 0)); // 上
-            wall[1] = new TerritorialityWall( new Vector3(0, _territorialityOrigin.y - _territorialityLength.y, 0), new Vector3(0, +1.0f, 0)); // 下
-            wall[2] = new TerritorialityWall(new Vector3(_territorialityOrigin.x - _territorialityLength.x, 0, 0), new Vector3(+1.0f, 0, 0));  // 左
-            wall[3] = new TerritorialityWall(new Vector3(_territorialityOrigin.x + _territorialityLength.x, 0, 0), new Vector3(-1.0f, 0, 0));  // 右
-            wall[4] = new TerritorialityWall(new Vector3(0, 0, _territorialityOrigin.z - _territorialityLength.z), new Vector3(0, 0, +1.0f));  // 前
-            wall[5] = new TerritorialityWall(new Vector3(0, 0, _territorialityOrigin.z + _territorialityLength.z), new Vector3(0, 0, -1.0f));  // 奥
+            Territory.Wall[] wall = _territory.GetWall();
 
             Vector3 force = Vector3.zero;
             bool isVisible = false;
@@ -239,9 +240,17 @@ namespace rt
             if (isVisible)
             {
                 float r = Vector3.Dot(force, force);
-                r = Mathf.Clamp(r, 0.05f, 1.0f);
+                r = Mathf.Clamp(r, _minTerritorialityForce, _maxTerritorialityForce);
                 force.Normalize();
                 force *= r;
+            }
+
+            /**
+            * すり抜けて遠くへ行ってしまったとき。
+            */
+            if (Vector3.Distance(_transform.position,_territory._transform.position) > _territory._transform.localScale.magnitude)
+            {
+                _transform.position = _territory._transform.position;
             }
 
             return force;
