@@ -123,7 +123,7 @@ namespace rt
         {
             UpdatePosition(tick); // 位置の更新
             UpdateForward(tick); // 向きの更新
-            ClampPosition(tick);  // 範囲処理
+            //ClampPosition(tick);  // 範囲処理
             UpdateAcceleration(tick); // 加速度の更新
             UpdateSpeed(tick); // 速度の更新
             _currentFrameAcceleration = Vector3.zero; // フレーム間加速度の初期化

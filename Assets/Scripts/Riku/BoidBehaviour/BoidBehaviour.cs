@@ -11,16 +11,42 @@ namespace rt
         // ========================================
         // data
         // ========================================
+        [SerializeField] private float _swimPower;
         [SerializeField] private float _fieldOfView;
         [SerializeField] private float _minFishDistance;
         [SerializeField] private float _matchInfluence;
         [SerializeField] private float _steerInfluence;
+        [SerializeField] private Vector3 _territorialityLength;
+        [SerializeField] private Vector3 _territorialityOrigin;
         private Transform _transform;
         private FishMoveBehaviour _moveBehaviour;
         private List<Fish> _visibleFishList;
         private Fish _nearestFish;
         private float _nearestDistance;
         private float _swingSize;
+
+        // ========================================
+        // class
+        // ========================================
+        class TerritorialityWall
+        {
+            public Vector3 postion;
+            public Vector3 normal;
+            public TerritorialityWall(Vector3 p, Vector3 n)
+            {
+                postion = p;
+                normal = n;
+            }
+
+            public Vector3 GetDistance(Vector3 _pos)
+            {
+                Vector3 distance = _pos - this.postion;
+                float d = Vector3.Dot(distance, normal);
+                distance = d * normal;
+                return distance;
+            }
+        }
+        
 
         // ========================================
         // 初期処理
@@ -31,11 +57,14 @@ namespace rt
             _moveBehaviour = GetComponent<FishMoveBehaviour>();
             _visibleFishList = new List<Fish>();
             // とりあえずここで設定
+            _swimPower = 20.0f;
             _fieldOfView = 5.0f;
             _minFishDistance = 0.8f;
             _matchInfluence = 0.5f;
             _swingSize = 0.3f;
             _steerInfluence = 0.1f;
+            _territorialityLength = new Vector3(20.0f, 20.0f, 20.0f);
+            _territorialityOrigin = new Vector3(0, 0, 0);
         }
 
         // ========================================
@@ -49,6 +78,8 @@ namespace rt
             // 加速度計算
             Vector3 acc;
             acc = PersonalMove();
+            acc += TerritorialityFlow();
+            acc += AvoidObstacle();
             if (_nearestFish != null)
             {
                 acc += TakeDistance();
@@ -56,8 +87,7 @@ namespace rt
                 acc += SteerToCenter();
             }
             
-            float force = 20.0f;
-            _moveBehaviour.AddCurrentFrameAcceleration(acc * tick * force);
+            _moveBehaviour.AddCurrentFrameAcceleration(acc * _swimPower * tick);
         }
 
         // ========================================
@@ -86,7 +116,7 @@ namespace rt
 
             // 進行方向
             moveSpeed.Normalize();
-            moveSpeed *= (-1 * sign * _swingSize);
+            moveSpeed *= (-1 * sign * _swingSize) * 0.1f;
 
 
             return moveSpeed;
@@ -180,11 +210,41 @@ namespace rt
 
         // ========================================
         // 境界内を自然に留まる処理
+        // 流れの方向が一定になってしまうので要対策
         // @return 加速度
         // ========================================
-        protected virtual Vector3 BoundaryFlow()
+        protected virtual Vector3 TerritorialityFlow()
         {
-            return Vector3.zero;
+            TerritorialityWall[] wall = new TerritorialityWall[6];
+            wall[0] = new TerritorialityWall( new Vector3(0, _territorialityOrigin.y + _territorialityLength.y, 0), new Vector3(0, -1.0f, 0)); // 上
+            wall[1] = new TerritorialityWall( new Vector3(0, _territorialityOrigin.y - _territorialityLength.y, 0), new Vector3(0, +1.0f, 0)); // 下
+            wall[2] = new TerritorialityWall(new Vector3(_territorialityOrigin.x - _territorialityLength.x, 0, 0), new Vector3(+1.0f, 0, 0));  // 左
+            wall[3] = new TerritorialityWall(new Vector3(_territorialityOrigin.x + _territorialityLength.x, 0, 0), new Vector3(-1.0f, 0, 0));  // 右
+            wall[4] = new TerritorialityWall(new Vector3(0, 0, _territorialityOrigin.z - _territorialityLength.z), new Vector3(0, 0, +1.0f));  // 前
+            wall[5] = new TerritorialityWall(new Vector3(0, 0, _territorialityOrigin.z + _territorialityLength.z), new Vector3(0, 0, -1.0f));  // 奥
+
+            Vector3 force = Vector3.zero;
+            bool isVisible = false;
+            Vector3 position = _transform.position;
+            for (int i = 0; i < 6; ++i)
+            {
+                Vector3 vDistance = wall[i].GetDistance(position);
+                float fDistance = vDistance.magnitude + float.Epsilon;
+                if (fDistance > _fieldOfView) continue;
+                isVisible = true;
+                vDistance.Normalize();
+                force += vDistance / fDistance;
+            }
+
+            if (isVisible)
+            {
+                float r = Vector3.Dot(force, force);
+                r = Mathf.Clamp(r, 0.05f, 1.0f);
+                force.Normalize();
+                force *= r;
+            }
+
+            return force;
         }
 
         // ========================================
