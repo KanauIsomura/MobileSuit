@@ -35,6 +35,7 @@ namespace rt
             _minFishDistance = 0.8f;
             _matchInfluence = 0.5f;
             _swingSize = 0.3f;
+            _steerInfluence = 0.1f;
         }
 
         // ========================================
@@ -54,6 +55,7 @@ namespace rt
                 acc += MatchMove();
                 acc += SteerToCenter();
             }
+            
             float force = 20.0f;
             _moveBehaviour.AddCurrentFrameAcceleration(acc * tick * force);
         }
@@ -174,6 +176,24 @@ namespace rt
             v.Normalize();
             v *= _steerInfluence;
             return v;
+        }
+
+        // ========================================
+        // 境界内を自然に留まる処理
+        // @return 加速度
+        // ========================================
+        protected virtual Vector3 BoundaryFlow()
+        {
+            return Vector3.zero;
+        }
+
+        // ========================================
+        // 障害物をよける動き
+        // @return 加速度
+        // ========================================
+        protected virtual Vector3 AvoidObstacle()
+        {
+            return Vector3.zero;
         }
     }
 
