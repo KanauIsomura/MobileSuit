@@ -20,9 +20,9 @@ namespace rt
         // ========================================
         // property    
         // ========================================
-        protected Vector3 moveSpeedVector
+        public Vector3 moveSpeedVector
         {
-            set
+            protected set
             {
                 _moveSpeedVector = value;
                 _moveSpeedScalar = _moveSpeedVector.magnitude;
@@ -111,6 +111,8 @@ namespace rt
             base.Start();
             maxCurrentFrameAcceleration = 3.0f;
             maxSpeedScalar = 3.0f;
+
+            moveSpeedVector = new Vector3((Random.value - 0.5f) * 2.0f, (Random.value - 0.5f) * 2.0f, (Random.value - 0.5f) * 2.0f);
         }
 
         // ========================================
