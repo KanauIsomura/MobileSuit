@@ -2,15 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fish : MonoBehaviour {
+namespace rt
+{
+    [RequireComponent(typeof(FishMoveBehaviour))]
+    public class Fish : MonoBehaviour
+    {
+        [SerializeField]
+        FishMoveBehaviour _moveBehaviour;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+        void Start()
+        {
+            _moveBehaviour = GetComponent<FishMoveBehaviour>();
+        }
+
+        void Update()
+        {
+            float tick = Time.deltaTime;
+            _moveBehaviour.AddCurrentFrameAcceleration(new Vector3(1.0f, 0, 1.0f));
+            _moveBehaviour.Exec(tick);  // 移動          
+        }
+    }
+
 }
