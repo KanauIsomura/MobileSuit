@@ -265,7 +265,6 @@ namespace rt
         // ========================================
         protected virtual Vector3 ReturnTerritoriality()
         {
-            UnityEngine.Debug.Log("test");
             Vector3 force = _territory._transform.position - _transform.position;
             force.Normalize();
             return force;
