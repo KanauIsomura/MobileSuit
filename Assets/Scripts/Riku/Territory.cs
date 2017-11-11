@@ -38,6 +38,19 @@ public class Territory : MonoBehaviour
 
     }
 
+    public bool IsInTerritory(Vector3 point)
+    {
+        Vector3 p = _transform.position;
+        Vector3 s = _transform.localScale * 0.5f;
+        if (p.x + s.x < point.x) return false;
+        if (p.x - s.x > point.x) return false;
+        if (p.y + s.y < point.y) return false;
+        if (p.y - s.y > point.y) return false;
+        if (p.z + s.z < point.z) return false;
+        if (p.z - s.z > point.z) return false;
+        return true;
+    }
+
     public Wall[] GetWall()
     {
         Wall[] wall = new Wall[6];

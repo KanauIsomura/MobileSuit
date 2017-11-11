@@ -217,10 +217,22 @@ namespace rt
 
         // ========================================
         // 境界内を自然に留まる処理
-        // 流れの方向が一定になってしまうので要対策
         // @return 加速度
         // ========================================
         protected virtual Vector3 TerritorialityFlow()
+        {
+            // テリトリー内にいるかどうかを調べる
+
+            if (_territory.IsInTerritory(_transform.position))
+                return StayTerritoriality();
+            else
+                return ReturnTerritoriality();
+        }
+
+        // ========================================
+        // テリトリー内を留まる
+        // ========================================
+        protected virtual Vector3 StayTerritoriality()
         {
             Territory.Wall[] wall = _territory.GetWall();
 
@@ -245,14 +257,17 @@ namespace rt
                 force *= r;
             }
 
-            /**
-            * すり抜けて遠くへ行ってしまったとき。
-            */
-            if (Vector3.Distance(_transform.position,_territory._transform.position) > _territory._transform.localScale.magnitude)
-            {
-                _transform.position = _territory._transform.position;
-            }
+            return force;
+        }
 
+        // ========================================
+        // テリトリー内に戻る
+        // ========================================
+        protected virtual Vector3 ReturnTerritoriality()
+        {
+            UnityEngine.Debug.Log("test");
+            Vector3 force = _territory._transform.position - _transform.position;
+            force.Normalize();
             return force;
         }
 
