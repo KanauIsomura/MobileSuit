@@ -243,6 +243,7 @@ GameObject:
   - component: {fileID: 21392692}
   - component: {fileID: 21392696}
   - component: {fileID: 21392697}
+  - component: {fileID: 21392698}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -341,6 +342,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PlayerMoveSpeed: 10
   m_PlayerRotSpeed: 100
+--- !u!114 &21392698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 21392691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bed440213b883c47ae858a9e8eb751b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &54991392
 GameObject:
   m_ObjectHideFlags: 0
@@ -1245,6 +1257,12 @@ Prefab:
       propertyPath: m_PlayerObj
       value: 
       objectReference: {fileID: 21392691}
+    - target: {fileID: 114184407676732892, guid: 1352b4e96b3dca74b9445684671fed11,
+        type: 2}
+      propertyPath: m_ImagePrefab
+      value: 
+      objectReference: {fileID: 1457844130798850, guid: dc4516e83d22c594e84b75adf7fb5901,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1352b4e96b3dca74b9445684671fed11, type: 2}
   m_IsPrefabParent: 0
