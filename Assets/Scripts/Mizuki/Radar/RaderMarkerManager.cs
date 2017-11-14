@@ -41,12 +41,15 @@ public class RaderMarkerManager : SingletonMonoBehaviour<RaderMarkerManager> {
 	public void CheckAndSetMarker() {
 		List<GameObject> m_RaderObjList = new List<GameObject>();
 		m_MakerManager.DeleteObjAll();
+        // レーダーに乗せるオブジェクトを全検索
 		foreach(string tagName in m_RaderViewObjectTagList) {
 			m_RaderObjList.AddRange(GameObject.FindGameObjectsWithTag(tagName));
 		}
 
+        // レーダー上のオブジェクト位置を計算
 		foreach(GameObject obj in m_RaderObjList) {
 			Vector3 position = (obj.transform.position / m_RaderRange) - (m_PlayerObj.transform.position / m_RaderRange);
+            // 範囲外ならレーダー上に表示しない
             if(m_RaderRangeLimit < Mathematics.VectorSize(new Vector3(position.x,position.z, 0.0f))) {
                 continue;
             }
